@@ -1,0 +1,8 @@
+App(
+    appid="switch2_wake_test",
+    name="Switch2 Wake Test",
+    apptype=FlipperAppType.EXTERNAL,
+    entry_point="switch2_wake_test_app",
+    requires=["gui"],
+    stack_size=2048,
+)
