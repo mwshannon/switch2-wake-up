@@ -13,7 +13,7 @@ static const char *const TAG = "switch2_wake";
 
 void Switch2WakeComponent::setup() {
 #ifdef USE_ESP32
-  static uint8_t k_base_mac[6] = {0x98, 0xE2, 0x55, 0xAE, 0xF7, 0xD6};
+  static uint8_t k_base_mac[6] = {0x40, 0x44, 0xF7, 0x57, 0xEA, 0xFD};  // Joy-Con 40:44:F7:57:EA:FF minus 2 (ESP32 BT MAC = base + 2)
   esp_err_t err = esp_base_mac_addr_set(k_base_mac);
   if(err != ESP_OK) {
     ESP_LOGW(TAG, "esp_base_mac_addr_set failed: %d", err);
@@ -47,9 +47,14 @@ void Switch2WakeComponent::send_once() {
 
   static uint8_t k_adv_payload[31] = {
       0x02, 0x01, 0x06, 0x1B, 0xFF, 0x53, 0x05, 0x01, 0x00, 0x03, 0x7E,
-      0x05, 0x66, 0x20, 0x00, 0x01, 0x81, 0x97, 0x1F, 0x99, 0x55, 0xE2,
-      0x98, 0x0F, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+      0x05, 0x66, 0x20, 0x00, 0x01, 0x81, 0x0D, 0xC9, 0x2B, 0xF7, 0x44,
+      0x40, 0x0F, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
   };
+
+  uint8_t bt_mac[6];
+  esp_read_mac(bt_mac, ESP_MAC_BT);
+  ESP_LOGI(TAG, "Sending wake burst as BT MAC %02X:%02X:%02X:%02X:%02X:%02X (target 40:44:F7:57:EA:FF)",
+           bt_mac[0], bt_mac[1], bt_mac[2], bt_mac[3], bt_mac[4], bt_mac[5]);
 
   esp_err_t err = esp_ble_gap_config_adv_data_raw(k_adv_payload, sizeof(k_adv_payload));
   if(err != ESP_OK) {
