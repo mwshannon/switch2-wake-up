@@ -11,7 +11,6 @@ switch2_wake_ns = cg.esphome_ns.namespace("switch2_wake")
 Switch2WakeComponent = switch2_wake_ns.class_(
     "Switch2WakeComponent",
     cg.Component,
-    esp32_ble.GAPEventHandler,
     cg.Parented.template(esp32_ble.ESP32BLE),
 )
 
